@@ -1,3 +1,31 @@
+import express from 'express';
+import cors from 'cors';
+import fetch from 'node-fetch';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const app = express(); // تعريف التطبيق
+
+const PORT = process.env.PORT || 3000;
+
+// لتعريف __dirname في ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const AI_GATEWAY_API_KEY = "MXugLSTxZDakBn9wPpzrv1tv";
+
+app.use(cors());
+app.use(express.json());
+
+// استضافة مجلد public للواجهة
+app.use(express.static(path.join(__dirname, 'public')));
+
+// مسار الصفحة الرئيسية
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// API دردشة
 app.post('/chat', async (req, res) => {
   const { message } = req.body;
 
@@ -17,15 +45,14 @@ app.post('/chat', async (req, res) => {
 
     const data = await response.json();
 
-    console.log('Response from AI API:', data);  // **اضف هذا السطر**
-
-    // مثال تعديل استخراج الرد (حسب هيكل البيانات الحقيقية)
-    // فرضًا الرد في data.reply
-    // إذا لم يكن موجود، جرب تعدل هنا حسب ما تجد في الـ console.log
-
+    // يمكنك التعديل هنا حسب شكل الرد الحقيقي من API
     res.json({ reply: data.reply || 'لا يوجد رد من الخدمة' });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'حدث خطأ في الخادم' });
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
