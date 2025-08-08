@@ -1,14 +1,14 @@
 {
-  "name": "ai-chat-server",
+  "name": "whatsapp-bug-bot",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
+    "@whiskeysockets/baileys": "^5.0.9",
     "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "node-fetch": "^3.3.1"
-  },
-  "type": "module"
+    "pino": "^8.15.0",
+    "socket.io": "^4.7.2"
+  }
 }
