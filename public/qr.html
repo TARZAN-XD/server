@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>رمز الاقتران - WhatsApp Bot</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    margin: 0; padding: 20px;
+    direction: rtl;
+    text-align: center;
+  }
+  #qrImage {
+    margin-top: 20px;
+    user-select: none;
+  }
+  #message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: green;
+  }
+</style>
+</head>
+<body>
+  <h2>امسح رمز QR لربط واتساب</h2>
+  <div id="qrImage">جارٍ انتظار رمز QR...</div>
+  <div id="message"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const qrImageDiv = document.getElementById('qrImage');
+    const messageDiv = document.getElementById('message');
+
+    const socket = io();
+
+    socket.on('qr', (qr) => {
+      qrImageDiv.innerHTML = '';
+      if (!qr) {
+        qrImageDiv.textContent = 'لا يوجد رمز QR حالياً.';
+        return;
+      }
+      const img = document.createElement('img');
+      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(qr);
+      img.alt = 'رمز QR';
+      qrImageDiv.appendChild(img);
+      messageDiv.textContent = 'امسح رمز QR عبر تطبيق واتساب.';
+    });
+
+    socket.on('paired', () => {
+      messageDiv.textContent = '✅ تم الربط بنجاح!';
+      qrImageDiv.innerHTML = '';
+    });
+
+    socket.on('pairFailed', () => {
+      messageDiv.textContent = '❌ فشل في الربط. حاول مرة أخرى.';
+    });
+  </script>
+</body>
+</html>
